@@ -1,0 +1,114 @@
+ men are 
+1 4 3 1 2 
+2 2 1 3 4 
+3 1 3 4 2 
+4 4 3 1 2 
+
+
+women  are 
+1 3 2 4 1 
+2 2 3 1 4 
+3 3 1 2 4 
+4 3 2 4 1 
+man num 1
+men[1][1] is 4
+ assigning man 1 to women 4
+man num 2
+men[2][1] is 2
+ assigning man 2 to women 2
+man num 3
+men[3][1] is 1
+ assigning man 3 to women 1
+man num 4
+men[4][1] is 4
+4 womanCurrentEnagagedTo 1
+index 1 is 4 index2 is 3
+pushing 1
+ assigning man 4 to women 4
+man num 1
+men[1][2] is 3
+ assigning man 1 to women 3
+now done
+ stable marriages are 
+1 3
+2 2
+3 1
+4 4
+ men are 
+1 3 4 2 1 6 7 5 
+2 6 4 2 3 5 1 7 
+3 6 3 5 7 2 4 1 
+4 1 6 3 2 4 7 5 
+5 1 6 5 3 4 7 2 
+6 1 7 3 4 5 6 2 
+7 5 6 2 4 3 7 1 
+
+
+women  are 
+1 4 5 3 7 2 6 1 
+2 5 6 4 7 3 2 1 
+3 1 6 5 4 3 7 2 
+4 3 5 6 7 2 4 1 
+5 1 7 6 4 3 5 2 
+6 6 3 7 5 2 4 1 
+7 1 7 4 2 6 5 3 
+man num 1
+men[1][1] is 3
+ assigning man 1 to women 3
+man num 2
+men[2][1] is 6
+ assigning man 2 to women 6
+man num 3
+men[3][1] is 6
+6 womanCurrentEnagagedTo 2
+index 1 is 5 index2 is 2
+pushing 2
+ assigning man 3 to women 6
+man num 4
+men[4][1] is 1
+ assigning man 4 to women 1
+man num 5
+men[5][1] is 1
+1 womanCurrentEnagagedTo 4
+index 1 is 1 index2 is 2
+men[5][2] is 6
+6 womanCurrentEnagagedTo 3
+index 1 is 2 index2 is 4
+men[5][3] is 5
+ assigning man 5 to women 5
+man num 6
+men[6][1] is 1
+1 womanCurrentEnagagedTo 4
+index 1 is 1 index2 is 6
+men[6][2] is 7
+ assigning man 6 to women 7
+man num 7
+men[7][1] is 5
+5 womanCurrentEnagagedTo 5
+index 1 is 6 index2 is 2
+pushing 5
+ assigning man 7 to women 5
+man num 2
+men[2][2] is 4
+ assigning man 2 to women 4
+man num 5
+men[5][4] is 3
+3 womanCurrentEnagagedTo 1
+index 1 is 1 index2 is 3
+men[5][5] is 4
+4 womanCurrentEnagagedTo 2
+index 1 is 5 index2 is 2
+pushing 2
+ assigning man 5 to women 4
+man num 2
+men[2][3] is 2
+ assigning man 2 to women 2
+now done
+ stable marriages are 
+1 3
+2 2
+3 6
+4 1
+5 4
+6 7
+7 5
