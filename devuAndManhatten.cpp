@@ -53,178 +53,153 @@ void printn(int n)
 		putc_unlocked(*ptr++,stdout);
 	}
 }
-int N,Q;
-int segmentTreeSumMax[400004],segmentTreeSumMin[400004],segmentTreeSubMax[400004],segmentTreeSubMin[400004];
-int sum[100001],sub[100001];
 
-void buildSegmentTree(int i, int j ,int node, int *segArr,int *arr,bool max)
+
+
+
+struct Node
 {
-    //Here segArr is the segment tree array and arr is the array we would compare to
-    //Segment tree takes O(n) to build
-    //Note Segment tree stores the indexes not the value
+    int maxIndex,minIndex;
+};
+struct Node badnode;
+
+
+typedef struct Node node1;
+
+
+
+int points[100001][2];
+int N,Q;
+node1 segmentTreexPlusy[400004],segmentTreexMinusy[400004],segmentTreeminusxPlusy[400004],segmentTreeminusxMinusy[400004];
+int xPlusy[100001],xMinusy[100001],minusxPlusy[100001],minusxMinusy[100001];
+
+void buildSegmentTree(int i,int j,int node,node1 *segArr,int *arr)
+{
     if(i==j)
     {
-        segArr[node]=i;
+        segArr[node].maxIndex=i;
+        segArr[node].minIndex=i;
         return;
-    }    
+    }
     
     int mid=(i+j)/2;
-    buildSegmentTree(i,mid,2*node,segArr,arr,max);
-    buildSegmentTree(mid+1,j,2*node+1,segArr,arr,max);
+    buildSegmentTree(i,mid,2*node,segArr,arr);
+    buildSegmentTree(mid+1,j,2*node+1,segArr,arr);
     
-    if(max)
+    //since in this version of the code the segment tree stores both the max and the min value 
+    
+    if(arr[segArr[2*node].maxIndex] > arr[segArr[2*node+1].maxIndex])
     {
-        // That is we want to store the maximum value sin the intervals
-        //Each node in the segment tree stores the maximum value in the intervals
-        //cout<<"checking max arr[segArr[2*node]]>arr[segArr[2*node+1]] "<<arr[segArr[2*node]]<<" and "<<arr[segArr[2*node+1]]<<"\n";
-        if(arr[segArr[2*node]]>arr[segArr[2*node+1]])
-        {
-            segArr[node]=segArr[2*node];   
-        }
-        else
-        {
-            segArr[node]=segArr[2*node+1];
-        }
+        segArr[node].maxIndex=segArr[2*node].maxIndex;
     }
     else
     {
-        if(arr[segArr[2*node]]<=arr[segArr[2*node+1]])
-        {
-            segArr[node]=segArr[2*node];   
-        }
-        else
-        {
-            segArr[node]=segArr[2*node+1];
-        }
-        
+        segArr[node].maxIndex=segArr[2*node+1].maxIndex;
+    }
+    
+    if(arr[segArr[2*node].minIndex] < arr[segArr[2*node+1].minIndex])
+    {
+        segArr[node].minIndex=segArr[2*node].minIndex;
+    }
+    else
+    {
+        segArr[node].minIndex=segArr[2*node+1].minIndex;
     }
     
 }
-void updateSegmentTree(int i,int j,int node,int indexToBeUpdated,int value,int *segArr,int *arr,bool max)
+
+void updateSegmentTree(int i,int j,int node,int value,int indexToBeUpdated,node1 *segArr,int *arr)
 {
-    //cout<<"\nin update\n";
+    //cout<<"in up node="<<node<<" and  indexToBeUpdated "<<indexToBeUpdated<<"\n";
     if(i==j and i==indexToBeUpdated)
     {
-        arr[i]=value;
+        arr[indexToBeUpdated]=value;
         return;
     }
-    //Now we need to check if the segment tree has changed or not
     int mid=(i+j)/2;
-    if(indexToBeUpdated >mid)
+    //cout<<"in up node="<<node<<" and  indexToBeUpdated "<<indexToBeUpdated<<" mid is "<<mid<<"\n";
+    if(mid >= indexToBeUpdated)
     {
-        updateSegmentTree(mid+1,j,2*node+1,indexToBeUpdated,value,segArr,arr,max);
+        updateSegmentTree(i,mid,2*node,value,indexToBeUpdated,segArr,arr);
     }
     else
     {
-        updateSegmentTree(i,mid,2*node,indexToBeUpdated,value,segArr,arr,max);
+        updateSegmentTree(mid+1,j,2*node+1,value,indexToBeUpdated,segArr,arr);
     }
-    if(max)
+
+    
+    
+    if(arr[segArr[2*node].maxIndex] > arr[segArr[2*node+1].maxIndex])
     {
-        if(arr[segArr[2*node]]>arr[segArr[2*node+1]])
-        {
-            segArr[node]=segArr[2*node];   
-        }
-        else
-        {
-            segArr[node]=segArr[2*node+1];
-        }
+        segArr[node].maxIndex=segArr[2*node].maxIndex;
     }
     else
     {
-        if(arr[segArr[2*node]]<=arr[segArr[2*node+1]])
-        {
-            segArr[node]=segArr[2*node];   
-        }
-        else
-        {
-            segArr[node]=segArr[2*node+1];
-        }
-        
+        segArr[node].maxIndex=segArr[2*node+1].maxIndex;
     }
+    
+    if(arr[segArr[2*node].minIndex] < arr[segArr[2*node+1].minIndex])
+    {
+        segArr[node].minIndex=segArr[2*node].minIndex;
+    }
+    else
+    {
+        segArr[node].minIndex=segArr[2*node+1].minIndex;
+    }
+
 }
-void printSegmentTrees()
+
+
+
+
+node1 query(int i,int j,int node,int begin,int end,node1 *segArr,int *arr)
 {
-    int i,j;
-    cout<<"segmentTreeSumMax\n";
-    for(i=1;i<20;i++)
+    if(j<begin or i>end)
     {
-        cout<<segmentTreeSumMax[i]<<" ";
+        return badnode;
     }
-    cout<<"\n";
-    cout<<"segmentTreeSubMax\n";
-    for(i=1;i<20;i++)
-    {
-        cout<<segmentTreeSubMax[i]<<" ";
-    }
-    cout<<"\n";
-    cout<<"segmentTreeSumMin\n";
-    for(i=1;i<20;i++)
-    {
-        cout<<segmentTreeSumMin[i]<<" ";
-    }
-    cout<<"\n";
-    cout<<"segmentTreeSubMin\n";
-    for(i=1;i<20;i++)
-    {
-        cout<<segmentTreeSubMin[i]<<" ";
-    }
-    cout<<"\n";
-}
-void printManArrays()
-{
-    int i,j;
-    cout<<"sum\n";
-    for(i=1;i<20;i++)
-    {
-        cout<<sum[i]<<" ";
-    }
-    cout<<"\n";
-    cout<<"sub is\n";
-    for(i=1;i<20;i++)
-    {
-        cout<<sub[i]<<" ";
-    }
-    cout<<"\n";
-   
-}
-int query(int i,int j,int begin,int end,int node,int *segArr,int *arr,bool max)
-{
+    
     if(i>=begin and j<=end)
     {
         return segArr[node];
     }
-    if(j<begin or i>end)
-    {
-        return -1;
-    }
-    int mid=(i+j)/2;
-    int left=query(i,mid,begin,end,2*node,segArr,arr,max);
-    int right=query(mid+1,j,begin,end,2*node+1,segArr,arr,max);
     
-    if(left==-1)
+    int mid=(i+j)/2;
+    node1 left=query(i,mid,2*node,begin,end,segArr,arr); 
+    node1 right=query(mid+1,j,2*node+1,begin,end,segArr,arr);
+    
+    if(left.maxIndex==-1)
         return right;
     
-    else if(right==-1)
+    if(right.maxIndex==-1)
         return left;
+        
+    node1 newNode;
     
-    if(max)
+    if(arr[left.maxIndex] > arr[right.maxIndex])
     {
-        if(arr[left]>arr[right])
-            return left;
-        else
-            return right;
+        newNode.maxIndex=left.maxIndex;
     }
     else
     {
-        if(arr[left]>arr[right])
-            return right;
-        else
-            return left;
+        newNode.maxIndex=right.maxIndex;
     }
+    
+    if(arr[left.minIndex] > arr[right.minIndex])
+    {
+        newNode.minIndex=right.minIndex;
+    }
+    else
+    {
+        newNode.minIndex=left.minIndex;
+    }
+    return newNode;
 }
-int points[100001][2];
+
 int main()
 {
+    badnode.minIndex=-1;
+    badnode.maxIndex=-1;
     N=getInt();
     int i,j,index,r1,r2;
     char ch2;
@@ -232,31 +207,33 @@ int main()
     {
         points[i][0]=getInt();
         points[i][1]=getInt();
-        sum[i]=points[i][0]+points[i][1];
-        sub[i]=points[i][0]-points[i][1];
-        
+        xPlusy[i]=points[i][0]+points[i][1];
+        xMinusy[i]=points[i][0]-points[i][1];
+        minusxPlusy[i]=-points[i][0]+points[i][1];
+        minusxMinusy[i]=-points[i][0]-points[i][1];
     }
-    //Now we have stired the arrays subtract(x-y) and sum(x+y)
+    //Now we have stored the arrays x+y,x-y,-x+y,x-y
     //Now we need to build  a segmentTree out of it
     //Build 4 segment trees 
     //1) segment tree for x+y max
-    buildSegmentTree(1,N,1,segmentTreeSumMax,sum,true);
-    //cout<<"after summax\n";
+    buildSegmentTree(1,N,1,segmentTreexPlusy,xPlusy);
+     //cout<<"after summax\n";
     //printSegmentTrees();
     //2)segmentTree for x-y max
-    buildSegmentTree(1,N,1,segmentTreeSubMax,sub,true);
+    buildSegmentTree(1,N,1,segmentTreexMinusy,xMinusy);
     //cout<<"after submax\n";
     //printSegmentTrees();
     //3)segmentTree for x+y min
-    buildSegmentTree(1,N,1,segmentTreeSumMin,sum,false);
+    buildSegmentTree(1,N,1,segmentTreeminusxPlusy,minusxPlusy);
     //cout<<"after summin\n";
     //printSegmentTrees();
     //4)segmentTree for x-y min
-    buildSegmentTree(1,N,1,segmentTreeSubMin,sub,false);
+    buildSegmentTree(1,N,1,segmentTreeminusxMinusy,minusxMinusy);
     //cout<<"after submin\n";
     //now we have built the segment trees
     //printManArrays();
     //printSegmentTrees();
+    //cout<<"hi\n";
     
     Q=getInt();
     for(i=0;i<Q;i++)
@@ -271,20 +248,23 @@ int main()
             r2=getInt();
             points[index][0]=r1;
             points[index][1]=r2;
+
             //1)update segmentTreeSumMax
-            updateSegmentTree(1,N,1,index,r1+r2, segmentTreeSumMax,sum,true);
-            
+            //cout<<"qw\n";
+            updateSegmentTree(1,N,1,r1+r2,index, segmentTreexPlusy,xPlusy);
+            //cout<<"hi2\n";
             //2)update segmentTreeSubMax
-            updateSegmentTree(1,N,1,index,r1-r2, segmentTreeSubMax,sub,true);
+            updateSegmentTree(1,N,1,-r1+r2,index, segmentTreeminusxPlusy,minusxPlusy);
             
             //3)update segmentTreeSumMin
-            updateSegmentTree(1,N,1,index,r1+r2, segmentTreeSumMin,sum,false);
+            updateSegmentTree(1,N,1,r1-r2,index, segmentTreexMinusy,xMinusy);
             
             //4)update segmentTreeSubMin
-            updateSegmentTree(1,N,1,index,r1-r2, segmentTreeSubMin,sub,false);
+            updateSegmentTree(1,N,1,-r1-r2,index, segmentTreeminusxMinusy,minusxMinusy);
             //int i,int j,int node,int indexToBeUpdated,int value,int *segArr,int *arr,bool max)
             //now we need to update the sum and the subtract arrays, and consequently the segment trees
             //nt i,int j,int node,int indexToBeUpdated,int value,int *segArr,int *arr,bool max)
+            //cout<<"hi3\n";
         }
         else
         {
@@ -296,22 +276,27 @@ int main()
             //Now we have to get the maximum over all possible points and then check them
             //Case 1 : x+y max
             //int i,int j,int begin,int end,int node,int *segArr,int *arr,bool max)
-            int sumMax=query(1,N,r1,r2,1,segmentTreeSumMax,sum,true);
+            //query(int i,int j,int node,int begin,int end,node *segArr,int *arr)
+            node1 f1=query(1,N,1,r1,r2,segmentTreexPlusy,xPlusy);
+            int sumMax=xPlusy[f1.maxIndex]-xPlusy[f1.minIndex];
             
             //Case 2: x+y min
-            int sumMin=query(1,N,r1,r2,1,segmentTreeSumMin,sum,false);
+            node1 f3=query(1,N,1,r1,r2,segmentTreexMinusy,xMinusy);
+            int sumMin=xMinusy[f3.maxIndex] - xMinusy[f3.minIndex];
             
             //case 3: x-y max
-            int subMax=query(1,N,r1,r2,1,segmentTreeSubMax,sub,true);
+            node1 f2=query(1,N,1,r1,r2,segmentTreeminusxPlusy,minusxPlusy);
+            int subMax=minusxPlusy[f2.maxIndex]-minusxPlusy[f2.minIndex];
             
             //case 4: x-y min
-            int subMin=query(1,N,r1,r2,1,segmentTreeSubMin,sub,false);
+            node1 f4=query(1,N,1,r1,r2,segmentTreeminusxMinusy,minusxMinusy);
+            int subMin=minusxMinusy[f4.maxIndex]-minusxMinusy[f4.minIndex];
             
             //Each of the above query operations take O(log(n))
             int maxManhattenDistance=INT_MIN,indexOfMax;
             
             //case 1 x1+y1 - (x2+y2) ,x1>x2,y1>y2
-            int res1=sum[sumMax]-sum[sumMin];
+            int res1=sumMax;
             
             if(res1>maxManhattenDistance)
             {
@@ -320,7 +305,7 @@ int main()
             }
             
             //case 2 x1-y1 -(x2-y2) ,x1>x2,y2>y1
-            int res2= sub[subMax]-sub[subMin];
+            int res2= sumMin;
             if(res2>maxManhattenDistance)
             {
                 maxManhattenDistance=res2;
@@ -328,7 +313,7 @@ int main()
             }
             
             //case 3 : x2-y2 -(x1+y1) , x2>x1,y1>y2
-            int res3=sub[subMax]-sum[sumMin] ;
+            int res3=subMax;
             if(res3>maxManhattenDistance)
             {
                 maxManhattenDistance=res3;
@@ -336,7 +321,7 @@ int main()
             }
             
             //case 4: x2+y2 -(x1+y1) ,x2>x1,y2>y1
-            int res4=sum[sumMax]-sum[sumMin];
+            int res4=subMin;
             if(res3>maxManhattenDistance)
             {
                 maxManhattenDistance=res4;
@@ -347,7 +332,4 @@ int main()
             
         }
     }
-    //cout<<"\n\n now\n\n";
-    //printManArrays();
-    //printSegmentTrees();
 }
