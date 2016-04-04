@@ -151,6 +151,10 @@ node1 query(int i,int j,int node,int begin,int end,node1 *segArr,int *arr)
     }
     return newNode;
 }
+void printR(int r1,int r2,int r3,int r4)
+{
+    cout<<"r1 = "<<r1<<" r2= "<<r2<<" r3= "<<r3<<" r4= "<<r4<<"\n";
+}
 int main()
 {
     badnode.minIndex=-1;
@@ -219,7 +223,7 @@ int main()
             
             //case 1 x1+y1 - (x2+y2) ,x1>x2,y1>y2
             int maxManhattenDistance =INT_MIN,indexOfMax=0;
-            
+            printR(r1,r2,r3,r4);
             if(r1>maxManhattenDistance)
             {
                 maxManhattenDistance=r1;
