@@ -214,7 +214,7 @@ int main()
             //Case 2: x+y min
             node1 f2=query(1,N,1,r1,r2,segmentTreexMinusy,xMinusy);
             int r2=xMinusy[f2.maxIndex] - xMinusy[f2.minIndex];
-            
+            nexus 5 gyroscope
             node1 f3=query(1,N,1,r1,r2,segmentTreeminusxPlusy,minusxPlusy);
             int r3=minusxPlusy[f3.maxIndex] - minusxPlusy[f3.minIndex];
             
@@ -242,12 +242,9 @@ int main()
                 maxManhattenDistance=r3;
                 indexOfMax=3;
             }
-            
-            
-            
-            
+
           
-            //case 4: x2+y2 -(x1+y1) ,x2>x1,y2>y1
+            //case 4: x2+nexus 5 gyroscopey2 -(x1+y1) ,x2>x1,y2>y1
             
             if(r4>maxManhattenDistance)
             {
